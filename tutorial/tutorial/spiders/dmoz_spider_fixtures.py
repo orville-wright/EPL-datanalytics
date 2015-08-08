@@ -32,8 +32,8 @@ class DmozSpider(Spider):
        'myproject.middlewares.CustomDownloaderMiddleware': 300,
    }
 
-   http_user = 'david@usakiwi.com'
-   http_pass = 'Am3li@++'
+   http_user = 'trashcan_x@yahoo.com'
+   http_pass = 'sanfran1'
 
    name = "dmoz"
    allowed_domains = ["dmoz.org"]
