@@ -15,3 +15,8 @@ class DmozItem(Item):
     clubname = Field()
     clublink = Field()
     clublogo = Field()
+
+class DmozItem(Item):
+    fixdatetime = Field()
+    fixhometeam = Field()
+    fixawayteam = Field()
