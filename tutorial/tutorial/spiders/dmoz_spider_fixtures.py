@@ -1,3 +1,4 @@
+import sys
 #from scrapy.spider import BaseSpider
 #from scrapy.spider import CrawlSpider
 #
@@ -29,7 +30,7 @@ class DmozSpider(Spider):
 ###
 
    DOWNLOADER_MIDDLEWARES = {
-       'myproject.middlewares.CustomDownloaderMiddleware': 300,
+      'myproject.middlewares.CustomDownloaderMiddleware': 300,
    }
 
    http_user = 'trashcan_x@yahoo.com'
@@ -41,33 +42,38 @@ class DmozSpider(Spider):
    start_urls = ["http://fantasy.premierleague.com/fixtures/"]
 
    def parse(self, response):
-       sel = Selector(response)
+       sel0 = Selector(response)
 
-# set xpath point to extract dates & times withint TR block
-       fixchunk = sel.xpath('//*[@id="ism"]//tr[@class="ismFixture"]//td[1]/text()')
+# set xpath point to extract dates & times within the "ism" TR block
+# getting the list of dates tells us...
+# 1. A count of games that will be played in this weeks gameweek
+# 2. the date and time of each game is
+
+       fixchunk = sel0.xpath('//*[@id="ism"]//tr[@class="ismFixture"]//td[1]/text()')
        fixtures = []
        for j, k in enumerate(fixchunk.extract()):
-           print "Game: ", j, "starts at: ", k
-
+           #print "Game: ", j, "starts at: ", k
+           #print "Game: %d starts at: %s" % (j, k)
            item = DmozItem()
+           a = gethometeam(sel0, j)
+           b = getawayteam(sel0, j)
            item['fixdatetime'] = k
-           fixtures.append(item)
-
-#   def parse(self, response):
-       sel = Selector(response)
-       fixchunk = sel.xpath('//*[@id="ism"]//tbody//td[@class="ismHomeTeam"]/text()')
-       for j, k in enumerate(fixchunk.extract()):
-           print "Home team: ", k
-           item = DmozItem()
-           item['fixhometeam'] = k
-           fixtures.append(item)
-
-#   def parse(self, response):
-       sel = Selector(response)
-       fixchunk = sel.xpath('//*[@id="ism"]//tbody//td[@class="ismAwayTeam"]/text()')
-       for j, k in enumerate(fixchunk.extract()):
-           print "Away team: ", k
-           item = DmozItem()
-           item['fixawayteam'] = k
+           item['fixhometeam'] = a
+           item['fixawayteam'] = b
+           print "Game: %d starts at: %s - Home team: %s v Away team: %s" % (j, k, a, b)
            fixtures.append(item)
        return fixtures
+
+def gethometeam(selector, fixnum):
+    homechunk = selector.xpath('//*[@id="ism"]//tbody//tr[@class="ismFixture"]//td[@class="ismHomeTeam"]/text()')
+    for x, y in enumerate(homechunk.extract()):
+        if x == fixnum:
+            return y
+    return "NOT_FOUND"
+
+def getawayteam(selector, fixnum):
+    awaychunk = selector.xpath('//*[@id="ism"]//tbody//tr[@class="ismFixture"]//td[@class="ismAwayTeam"]/text()')
+    for n, m in enumerate(awaychunk.extract()):
+        if n == fixnum:
+            return m
+    return "NOT_FOUND"
