@@ -1,14 +1,10 @@
 import sys
 import re
-#from scrapy.spider import BaseSpider
-#from scrapy.spider import CrawlSpider
 #
 from scrapy.spider import Spider
 from scrapy.selector import Selector
-from scrapy.selector import Selector
 from scrapy.http import Request
 from scrapy.http import HtmlResponse
-
 from tutorial.items import DmozItem
 
 class fixturesSpider(Spider):
@@ -19,11 +15,14 @@ class fixturesSpider(Spider):
       for u in range(3, 7):
          gw = u
          print "SCANNING gameweek: [ %d ] URL: [ %d ]..." % (gw, u)
+         # the game week is the number at the end of the fixtures URL
+         # so construct the URL and pass it to he request
          yield Request('http://fantasy.premierleague.com/fixtures/' + str(u) +'/', self.parse)
 
    def parse(self, response):
       sel0 = Selector(response)
       gw_url = response.url
+      # extract the gameweek that we are scanning, i.e. the number at the end of the fixtures URL
       gw = int(re.sub(r'\D', "", gw_url))
       print "GETTING fixture data for gameweek: [ %d ]" % (gw)
       fixchunk = sel0.xpath('//*[@id="ism"]//tr[@class="ismFixture"]//td[1]/text()')
