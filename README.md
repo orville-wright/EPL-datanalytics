@@ -42,6 +42,7 @@ team decisions
 An AI enging will also be offered.
 This engine will operate under a set of personalizable & tunable rules that "you" can define
 and control. The AI will...
+
 1. Scan for injury rumors, news and info then compoute player not-starting probabilities
 2. Scan for hot & cold trends
 3. Extraqpolate scoring runs and trends and predict possible 'Black Swan' events
@@ -49,6 +50,7 @@ and control. The AI will...
 5. Compute best & worst games to play/avoid.
 6. Compute highest scoring probability of each game and player scoring probabilities
 7. Propose possible teams, transfers and team configs
+
 ...etc, etc
 
 
