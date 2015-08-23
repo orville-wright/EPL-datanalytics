@@ -6,13 +6,13 @@ Primary use case: As a companion to EPL Fantasy Football League
 
 v1.0 of the project is focused on the following priorities...
 
-1.  ETL (Extract, Translate, Load)
+1.  **ETL (Extract, Translate, Load)**
   1. Extracting data via scraping raw data from: http://www.premierleague.com/en-gb.html
 
-2. Prototyping & validating the data scraping technology & toolset
+2. **Prototyping & validating the data scraping technology & toolset**
   1. initially using SCRAPY (http://doc.scrapy.org/en/latest/intro/overview.html)
 
-3. Translating the web data into a format that is more usable
+3. **Translating the web data into a format that is more usable**
   1. testing Data Models for key datasets
   2. Loading data in a NoSQL MongoDB database
   3. Make all data available, espeically full historical data in non-agrigate form
