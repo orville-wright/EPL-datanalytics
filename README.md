@@ -1,8 +1,10 @@
 # EPL-datanalytics
 English Premier League Data Analytics AI platform
 
-Primary use case: As a companion to EPL Fantasy Football League
-                  played via http://www.premierleague.com/en-gb.html
+**Primary use case:**
+As a companion to EPL Fantasy Football League
+played via http://www.premierleague.com/en-gb.html
+
 
 v1.0 of the project is focused on the following priorities...
 
