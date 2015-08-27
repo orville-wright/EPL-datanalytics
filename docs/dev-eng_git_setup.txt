@@ -1,0 +1,30 @@
+Initial bare metal Dev config
+================================
+
+install git
+
+config git....
+  git config --global user.name orville-wright
+  git config --global user.email orville.wright@yahoo.com
+  git config --global core.editor vi
+
+generate ssh key on your new machine ...
+	ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+  Add your SSH key to github account in settings/ssh keys
+
+Test the github connection from host & initialize new ssh key...
+	ssh -T git@github.com
+
+move into yoru dev dir
+git init
+get fetch git@github.com:orville-wright/EPL-datanalytics.git
+git pull git@github.com:orville-wright/EPL-datanalytics.git
+
+#make code changes
+
+git add <changes>
+git commit -a
+git config -global push.default simple
+git push git@github.com:orville-wright/EPL-datanalytics.git
+
+#git push --set-upstream origin master
