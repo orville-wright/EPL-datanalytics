@@ -17,7 +17,8 @@ Test the github connection from host & initialize new ssh key...
 	ssh -T git@github.com
 
 #setup got gloabl config items
-#setup remote repos
+#setup remote orign repos, init local repo & pull down code into local repo
+	git clone git@github.com:orville-wright/EPL-datanalytics.git
 
 move into your dev dir
 git init
