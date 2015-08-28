@@ -9,13 +9,17 @@ config git....
   git config --global core.editor vi
 
 generate ssh key on your new machine ...
-	ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+	ssh to docker container as user: docker
+	ssh-keygen -t rsa -b 4096 -C "devdroid01@welltek.co"
   Add your SSH key to github account in settings/ssh keys
 
 Test the github connection from host & initialize new ssh key...
 	ssh -T git@github.com
 
-move into yoru dev dir
+#setup got gloabl config items
+#setup remote repos
+
+move into your dev dir
 git init
 get fetch git@github.com:orville-wright/EPL-datanalytics.git
 git pull git@github.com:orville-wright/EPL-datanalytics.git
