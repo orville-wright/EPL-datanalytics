@@ -25,10 +25,10 @@ class geteamnameSpider(Spider):
        #return scrapy.FormRequest.from_response(
        return scrapy.FormRequest.from_response(
            response,
-           #formdata={'Email Address': 'orville.wright@yahoo.com', 'Password': 'sanfran1'},
-           #formdata={'ismEmail': 'orville.wright@yahoo.com', 'id_password': 'sanfran1'},
-           formdata={'username': 'orville.wright@yahoo.com', 'password': 'sanfran1'},
-           #formdata={'j_username': 'orville.wright@yahoo.com', 'j_password': 'sanfran1'},
+           formdata={'ismEmail': 'orville.wright@yahoo.com', 'id_password': 'sanfran1'},
+           #formdata={'ismEmail': 'orville.wright@yahoo.com', 'password': 'sanfran1'},
+           #formdata={'email': 'orville.wright@yahoo.com', 'id_password': 'sanfran1'},
+           #formdata={'email': 'orville.wright@yahoo.com', 'password': 'sanfran1'},
            dont_click=True,
            #callback=self.after_login
            callback=self.get_myteam
