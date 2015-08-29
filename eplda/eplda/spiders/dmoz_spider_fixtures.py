@@ -5,11 +5,12 @@ from scrapy.spider import Spider
 from scrapy.selector import Selector
 from scrapy.http import Request
 from scrapy.http import HtmlResponse
-from tutorial.items import DmozItem
+from eplda.items import DmozItem
 
 class fixturesSpider(Spider):
    name = "fixtures"
    allowed_domains = ["premierleague.com"]
+   login_page = 'https://users.premierleague.com/premierUser/account/login.html'
 
    def start_requests(self):
       for u in range(3, 7):
