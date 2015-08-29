@@ -1,35 +1,46 @@
 Initial bare metal Dev config
 ================================
 
-install git
+#Install git
+  distro specific
 
-config git....
+#Config git global ietms....
   git config --global user.name orville-wright
   git config --global user.email orville.wright@yahoo.com
   git config --global core.editor vi
+  git config -global push.default simple
 
-generate ssh key on your new machine ...
-	ssh to docker container as user: docker
-	ssh-keygen -t rsa -b 4096 -C "devdroid01@welltek.co"
-  Add your SSH key to github account in settings/ssh keys
+#Generate ssh key on your new machine...
+  ssh to docker container as user: docker
+  ssh-keygen -t rsa -b 4096 -C "devdroid01@welltek.co"
 
-Test the github connection from host & initialize new ssh key...
-	ssh -T git@github.com
+#Add your SSH key to github account in settings/ssh keys...
+  copy key id_rsa.pub
+  paste key into box on githib webgui
 
-#setup got gloabl config items
-#setup remote orign repos, init local repo & pull down code into local repo
-	git clone git@github.com:orville-wright/EPL-datanalytics.git
+#Test ssh github connection from your host & initialize new ssh key...
+  ssh -T git@github.com
 
-move into your dev dir
-git init
-get fetch git@github.com:orville-wright/EPL-datanalytics.git
-git pull git@github.com:orville-wright/EPL-datanalytics.git
+#Move into your dev dir
+#Initialize a new git repo...
+  git init
+
+#Setup remote orign repos relationship the points to you github.com repo & pull down code into local repo
+  git clone git@github.com:orville-wright/EPL-datanalytics.git
+
+#Note; this is how you pull down the code normally after the initialization run...
+  get fetch git@github.com:orville-wright/EPL-datanalytics.git
+  git pull git@github.com:orville-wright/EPL-datanalytics.git
 
 #make code changes
+  hacking, hacking hacking...
+  git status
+  git add <changes>
+  git commit -a -m "commit message, blah blah blah"
+  git push
 
-git add <changes>
-git commit -a
-git config -global push.default simple
-git push git@github.com:orville-wright/EPL-datanalytics.git
 
-#git push --set-upstream origin master
+
+#Important tricky things you might need to do at some time...
+  git push --set-upstream origin master
+  git push git@github.com:orville-wright/EPL-datanalytics.git
