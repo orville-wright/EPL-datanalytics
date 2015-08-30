@@ -32,7 +32,7 @@ class geteamnameSpider(Spider):
           print "*** Setting up LOGIN form using URL: %s" % (response.url)
           return scrapy.FormRequest.from_response(
              response,
-             formdata={'email': 'trashcan_x@yahoo.com', 'password': 'sanfran1'},
+             formdata={'email': 'xxxxxxx@yyyyyy.com', 'password': 'qqqqqqqq'},
              dont_click=True,
              #callback=self.after_login
              callback=self.get_myteam
