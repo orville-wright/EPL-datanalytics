@@ -12,6 +12,7 @@ class geteamnameSpider(Spider):
    name = "geteamname"
    allowed_domains = ["premierleague.com"]
    start_urls = ["https://users.premierleague.com/PremierUser/account/login.html",
+   #start_urls = ["https://fantasy.premierleague.com",
                 "http://fantasy.premierleague.com/my-team/"
                 ]
 
@@ -25,7 +26,8 @@ class geteamnameSpider(Spider):
        #return scrapy.FormRequest.from_response(
        return scrapy.FormRequest.from_response(
            response,
-           formdata={'ismEmail': 'orville.wright@yahoo.com', 'id_password': 'sanfran1'},
+           formdata={'j_username': 'orville.wright@yahoo.com', 'j_password': 'sanfran1'},
+           #formdata={'ismEmail': 'orville.wright@yahoo.com', 'id_password': 'sanfran1'},
            #formdata={'ismEmail': 'orville.wright@yahoo.com', 'password': 'sanfran1'},
            #formdata={'email': 'orville.wright@yahoo.com', 'id_password': 'sanfran1'},
            #formdata={'email': 'orville.wright@yahoo.com', 'password': 'sanfran1'},
