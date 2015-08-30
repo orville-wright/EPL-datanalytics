@@ -15,11 +15,17 @@ TODO
             to have 1 single collection with all the player stats info in it. That would end up
             not scaling and probably be slow at scale.
 
-2. Work to do
+1.1 Player sttaus collection
    - define data mongodb model for player status source URL data
    - probably want more fields in it than the 4 in the URL
    - write code to do the initial ETL of all 4 collumns of data
    - Pump all data into mongodb collection
    - write update code to scan, check and update values on a regaulr period
-   
+
+2.0 Smarter Fixtures extract
+    Currently the fixtures spider isn't as smart as it needs to be.
+    It only finds fixture that havent been played and ignores fixtures in-progress or
+    games that have been played and have a result.
+
+
    
