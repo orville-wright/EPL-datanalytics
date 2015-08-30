@@ -1,0 +1,25 @@
+TODO
+====
+
+1. Full Player status list ingest
+   source URL: http://fantasy.premierleague.com/player-list/
+   this URL is a simple html doc provided by Barclays EPL website app
+   It loads very quickly because it a very basic page, but its a great rescoruce
+   as its kept very up-to-date by Barclays EPL website app.
+
+   - notes: I need to monitor is a decipher when and how frequently they update it.
+            Since players price can move by a max of $0.1M per day, this tabel is probably
+            updated every 24 hours.
+            My planned usage of the data in this URL is to use this as a fast reference
+            for accessing player points & value, with a few extra statsu; but I dont plan
+            to have 1 single collection with all the player stats info in it. That would end up
+            not scaling and probably be slow at scale.
+
+2. Work to do
+   - define data mongodb model for player status source URL data
+   - probably want more fields in it than the 4 in the URL
+   - write code to do the initial ETL of all 4 collumns of data
+   - Pump all data into mongodb collection
+   - write update code to scan, check and update values on a regaulr period
+   
+   
