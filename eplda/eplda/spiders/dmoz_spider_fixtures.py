@@ -1,7 +1,7 @@
 import sys
 import re
 #
-from scrapy.spider import Spider
+from scrapy.spiders import Spider
 from scrapy.selector import Selector
 from scrapy.http import Request
 from scrapy.http import HtmlResponse
@@ -26,7 +26,20 @@ class fixturesSpider(Spider):
       # extract the gameweek that we are scanning, i.e. the number at the end of the fixtures URL
       gw = int(re.sub(r'\D', "", gw_url))
       print "GETTING fixture data for gameweek: [ %d ]" % (gw)
+
+      # first we need to see if the game has been played.
+      # becasue there are 2 different & complex webpage forms for both class of games
+      # if the score != [u'v'] ... (basically a "v") then the game has been played, so
+      # we need to use the vmore complex xpath expression
+      # otherwise we use the simple xpath
+      #
+      # xpaths...
+      # score state:  //*[@id="ismFixtureTable"]/tbody/tr[*]/td[4]/text().extract()
+      # fixture date info (not played): //*[@id="ism"]//tr[@class="ismFixture"]//td[1]/text()
+      # fixture date info (played): //*[@id="ismFixtureTable"]/tbody/tr[@class="ismFixture ismResult"]/td[1]/text()')
+      #
       fixchunk = sel0.xpath('//*[@id="ism"]//tr[@class="ismFixture"]//td[1]/text()')
+      #fixchunk = sel0.xpath('//*[@id="ismFixtureTable"]/tbody/tr[*]/td[1]')
       fixtures = []
       for j, k in enumerate(fixchunk.extract()):
          item = DmozItem()
@@ -41,13 +54,15 @@ class fixturesSpider(Spider):
 
 def gethometeam(selector, fixnum):
     homechunk = selector.xpath('//*[@id="ism"]//tbody//tr[@class="ismFixture"]//td[@class="ismHomeTeam"]/text()')
+    #homechunk = selector.xpath('//*[@id="ismFixtureTable"]/tbody/tr[1]/td[2]/text()')
     for x, y in enumerate(homechunk.extract()):
         if x == fixnum:
             return y
     return "NOT_FOUND"
 
 def getawayteam(selector, fixnum):
-    awaychunk = selector.xpath('//*[@id="ism"]//tbody//tr[@class="ismFixture"]//td[@class="ismAwayTeam"]/text()')
+    #awaychunk = selector.xpath('//*[@id="ism"]//tbody//tr[@class="ismFixture"]//td[@class="ismAwayTeam"]/text()')
+    awaychunk = selector.xpath('//*[@id="ismFixtureTable"]/tbody/tr[1]/td[6]/text()')
     for n, m in enumerate(awaychunk.extract()):
         if n == fixnum:
             return m

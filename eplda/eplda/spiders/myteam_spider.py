@@ -3,14 +3,14 @@ import re
 import logging
 #
 import scrapy
-from scrapy.spider import Spider
+from scrapy.spiders import Spider
 from scrapy.selector import Selector
 from scrapy.http import Request
 from scrapy.http import HtmlResponse
 from eplda.items import DmozItem
 #
 
-class geteamnameSpider(Spider):
+class geteamnameSpider(scrapy.Spider):
    name = "geteamname"
    allowed_domains = ["premierleague.com"]
    start_urls = ['http://fantasy.premierleague.com']
@@ -22,32 +22,34 @@ class geteamnameSpider(Spider):
    #    yield Request('http://fantasy.premierleague.com/', self.parse)
 
    def parse(self, response):
+       logging.info('*** start_urls.parse triggered with URL %s', response.url)
+
        # this is incorrect now that only main login URL is being passed
        # either delete it or clean it up
-       print "*** MAIN: URL is:  %s" % (response.url)
+
        if response.url == "http://fantasy.premierleague.com/my-team/":
-          print "*** SUCESS skipping credentials code..."
+          logging.info('*** Credenitals posted successfully : skipping form FormRequest.post')
           return
        else:
-          print "*** Setting up LOGIN form using URL: %s" % (response.url)
+          logging.info('*** Setup credential form.login.post using URL: %s', response.url)
           return scrapy.FormRequest.from_response(
              response,
-             formdata={'email': 'xxxxxxx@yyyyyy.com', 'password': 'qqqqqqqq'},
+             formdata={'email': 'trashcan_x@yahoo.com', 'password': 'sanfran1'},
              dont_click=True,
              #callback=self.after_login
              callback=self.get_myteam
           )
-       print "*** UNKNOWN STATE ***"
+       logging.warning('*** UNKNONW STATE ***')
        return
 
    def get_myteam(self, response):
         if response.url == "http://fantasy.premierleague.com/?fail":
-           print "*** ABORTING as we are not logged in yet"
+           logging.info('*** ABORTING as we are not logged in yet')
         else:
-           print "*** LOGGED IN get_myteam using URL %s" % (response.url)
-           print "*** GETTING team info from URL: %s" % (response.url)
+           logging.info("*** LOGGED IN get_myteam using URL: %s" % response.url)
+           logging.info("*** SETTING up response.selector for URL: %s" % response.url)
            sel0 = Selector(response)
-           print "*** GETTING team info..."
+           logging.info("*** GETTING team info...")
            user_uuid = response.url.split('/')
            print "Player unique uid: %s" % (user_uuid[4])
            print "Player name; %s" % (sel0.xpath('//*[@id="ism"]/section[2]/h1/text()').extract())
