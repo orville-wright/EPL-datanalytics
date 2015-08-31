@@ -1,7 +1,7 @@
 import sys
 import re
 #
-from scrapy.spiders import Spider
+from scrapy.spider import Spider
 from scrapy.selector import Selector
 from scrapy.http import Request
 from scrapy.http import HtmlResponse
@@ -38,6 +38,7 @@ class fixturesSpider(Spider):
       # fixture date info (not played): //*[@id="ism"]//tr[@class="ismFixture"]//td[1]/text()
       # fixture date info (played): //*[@id="ismFixtureTable"]/tbody/tr[@class="ismFixture ismResult"]/td[1]/text()')
       #
+      
       fixchunk = sel0.xpath('//*[@id="ism"]//tr[@class="ismFixture"]//td[1]/text()')
       #fixchunk = sel0.xpath('//*[@id="ismFixtureTable"]/tbody/tr[*]/td[1]')
       fixtures = []
@@ -61,8 +62,8 @@ def gethometeam(selector, fixnum):
     return "NOT_FOUND"
 
 def getawayteam(selector, fixnum):
-    #awaychunk = selector.xpath('//*[@id="ism"]//tbody//tr[@class="ismFixture"]//td[@class="ismAwayTeam"]/text()')
-    awaychunk = selector.xpath('//*[@id="ismFixtureTable"]/tbody/tr[1]/td[6]/text()')
+    awaychunk = selector.xpath('//*[@id="ism"]//tbody//tr[@class="ismFixture"]//td[@class="ismAwayTeam"]/text()')
+    #awaychunk = selector.xpath('//*[@id="ismFixtureTable"]/tbody/tr[1]/td[6]/text()')
     for n, m in enumerate(awaychunk.extract()):
         if n == fixnum:
             return m

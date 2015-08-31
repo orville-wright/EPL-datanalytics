@@ -3,7 +3,7 @@ import re
 import logging
 #
 import scrapy
-from scrapy.spiders import Spider
+from scrapy.spider import Spider
 from scrapy.selector import Selector
 from scrapy.http import Request
 from scrapy.http import HtmlResponse
