@@ -6,6 +6,8 @@ from scrapy.selector import Selector
 from scrapy.http import Request
 from scrapy.http import HtmlResponse
 from eplda.items import DmozItem
+#
+import logging
 
 class fixturesSpider(Spider):
    name = "fixtures"
@@ -26,6 +28,17 @@ class fixturesSpider(Spider):
       # extract the gameweek that we are scanning, i.e. the number at the end of the fixtures URL
       gw = int(re.sub(r'\D', "", gw_url))
       print "GETTING fixture data for gameweek: [ %d ]" % (gw)
+
+      #print "*** Checking game results"
+      logging.info('*** Checking game results')
+      result0 = sel0.xpath('//*[@id="ismFixtureTable"]/tbody/tr[*]/td[4]/text()')
+#      print "Game state: %s" % (result0)
+
+      for m, n in enumerate(result0.extract()):
+         if n == "v":
+            print "Game %s has not been played yet" % (m+1)
+         else:
+            print "Game %s has been played & result is: %s" % (m+1, n)
 
       # first we need to see if the game has been played.
       # becasue there are 2 different & complex webpage forms for both class of games
