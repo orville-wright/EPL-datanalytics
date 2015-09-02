@@ -11,6 +11,9 @@ from eplda.items import DmozItem
 #
 
 class geteamnameSpider(scrapy.Spider):
+#   logging.basicConfig(level=logging.INFO)
+#   logging.info('*** Started: geteamname')
+
    name = "geteamname"
    allowed_domains = ["premierleague.com"]
    start_urls = ['http://fantasy.premierleague.com']
@@ -22,6 +25,8 @@ class geteamnameSpider(scrapy.Spider):
    #    yield Request('http://fantasy.premierleague.com/', self.parse)
 
    def parse(self, response):
+       logging.basicConfig(level=logging.INFO)
+       logging.info('*** Started: geteamname')
        logging.info('*** start_urls.parse triggered with URL %s', response.url)
 
        # this is incorrect now that only main login URL is being passed
@@ -31,7 +36,7 @@ class geteamnameSpider(scrapy.Spider):
           logging.info('*** Credenitals posted successfully : skipping form FormRequest.post')
           return
        else:
-          logging.info('*** Setup credential form.login.post using URL: %s', response.url)
+          logging.info('*** Setup credentials form.login.post using URL: %s', response.url)
           return scrapy.FormRequest.from_response(
              response,
              formdata={'email': 'trashcan_x@yahoo.com', 'password': 'sanfran1'},
@@ -44,9 +49,9 @@ class geteamnameSpider(scrapy.Spider):
 
    def get_myteam(self, response):
         if response.url == "http://fantasy.premierleague.com/?fail":
-           logging.info('*** ABORTING as we are not logged in yet')
+           logging.info('*** ABORTING we are not logged in yet')
         else:
-           logging.info("*** LOGGED IN get_myteam using URL: %s" % response.url)
+           logging.info("*** SUCCESS get_myteam() using URL: %s" % response.url)
            logging.info("*** SETTING up response.selector for URL: %s" % response.url)
            sel0 = Selector(response)
            logging.info("*** GETTING team info...")

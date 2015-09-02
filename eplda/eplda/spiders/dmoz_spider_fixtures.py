@@ -12,9 +12,11 @@ import logging
 class fixturesSpider(Spider):
    name = "fixtures"
    allowed_domains = ["premierleague.com"]
-   login_page = 'https://users.premierleague.com/premierUser/account/login.html'
 
    def start_requests(self):
+      logging.basicConfig(level=logging.INFO)
+      logging.info('*** Started: fixtures')
+
       for u in range(3, 7):
          gw = u
          print "SCANNING gameweek: [ %d ] URL: [ %d ]..." % (gw, u)
@@ -32,13 +34,19 @@ class fixturesSpider(Spider):
       #print "*** Checking game results"
       logging.info('*** Checking game results')
       result0 = sel0.xpath('//*[@id="ismFixtureTable"]/tbody/tr[*]/td[4]/text()')
-#      print "Game state: %s" % (result0)
 
       for m, n in enumerate(result0.extract()):
          if n == "v":
-            print "Game %s has not been played yet" % (m+1)
+            k = get_up_date(sel0, m+1)
+            a = get_up_hometeam(sel0, m+1)
+            b = get_up_awayteam(sel0, m+1)
+            print "Gameweek: %d - Game %s unplayed - starts at: %s - (Home) %s v %s (Away)" % (gw, m+1, k, a, b)
          else:
-            print "Game %s has been played & result is: %s" % (m+1, n)
+            k = get_pd_date(sel0, m+1)
+            a = get_pd_hometeam(sel0, m+1)
+            b = get_pd_awayteam(sel0, m+1)
+            c = get_pd_score(sel0, m+1)
+            print "Gameweek: %d - Game %s played - started at: %s - (Home) %s %s %s (Away)" % (gw, m+1, k, a, c, b)
 
       # first we need to see if the game has been played.
       # becasue there are 2 different & complex webpage forms for both class of games
@@ -52,19 +60,87 @@ class fixturesSpider(Spider):
       # fixture date info (played): //*[@id="ismFixtureTable"]/tbody/tr[@class="ismFixture ismResult"]/td[1]/text()')
       #
       
-      fixchunk = sel0.xpath('//*[@id="ism"]//tr[@class="ismFixture"]//td[1]/text()')
+      #fixchunk = sel0.xpath('//*[@id="ism"]//tr[@class="ismFixture"]//td[1]/text()')
       #fixchunk = sel0.xpath('//*[@id="ismFixtureTable"]/tbody/tr[*]/td[1]')
-      fixtures = []
-      for j, k in enumerate(fixchunk.extract()):
-         item = DmozItem()
-         a = gethometeam(sel0, j)
-         b = getawayteam(sel0, j)
-         item['fixdatetime'] = k
-         item['fixhometeam'] = a
-         item['fixawayteam'] = b
-         print "GAMEWEEK: %d - Game: %d starts at: %s - (Home) %s v %s (Away)" % (gw, j+1, k, a, b)
-         fixtures.append(item)
+      #fixtures = []
+      #for j, k in enumerate(fixchunk.extract()):
+         #item = DmozItem()
+         #a = gethometeam(sel0, j)
+         #b = getawayteam(sel0, j)
+         #item['fixdatetime'] = k
+         #item['fixhometeam'] = a
+         #item['fixawayteam'] = b
+         #print "GAMEWEEK: %d - Game: %d starts at: %s - (Home) %s v %s (Away)" % (gw, j+1, k, a, b)
+         #fixtures.append(item)
       return
+
+
+# functions for unplayed fixtures
+# a simple schema
+#
+def get_up_date(selector, gamenum):
+    #logging.info('get_unplayed_date(): gamenum = %s' % (gamenum))
+    result1 =  selector.xpath(('//*[@id="ismFixtureTable"]/tbody/tr[%d]/td[1]/text()') % (gamenum))
+    k = result1.extract()
+    return k
+
+def get_up_hometeam(selector, gamenum):
+    #logging.info('get_unplayed_date(): gamenum = %s' % (gamenum))
+    result1 =  selector.xpath(('//*[@id="ismFixtureTable"]/tbody/tr[%d]/td[2]/text()') % (gamenum))
+    k = result1.extract()
+    return k
+
+def get_up_awayteam(selector, gamenum):
+    #logging.info('get_unplayed_date(): gamenum = %s' % (gamenum))
+    result1 =  selector.xpath(('//*[@id="ismFixtureTable"]/tbody/tr[%d]/td[6]/text()') % (gamenum))
+    k = result1.extract()
+    return k
+
+# functions for played fixtures
+# a much more complex schema
+#
+def get_pd_date(selector, gamenum):
+    if ( gamenum % 2 != 0 ):
+       result1 = selector.xpath(('//*[@id="ismFixtureTable"]/tbody/tr[%d]/td[1]/text()') % (gamenum))
+       k = result1.extract()
+       return k
+    else:
+       result1 = selector.xpath(('//*[@id="ismFixtureTable"]/tbody/tr[%d]/td[1]/text()') % (gamenum+1))
+       k = result1.extract()
+       return k
+
+def get_pd_hometeam(selector, gamenum):
+    if ( gamenum % 2 != 0 ):
+       result1 = selector.xpath(('//*[@id="ismFixtureTable"]/tbody/tr[%d]/td[2]/text()') % (gamenum))
+       k = result1.extract()
+       return k
+    else:
+       result1 = selector.xpath(('//*[@id="ismFixtureTable"]/tbody/tr[%d]/td[2]/text()') % (gamenum+1))
+       k = result1.extract()
+       return k
+
+def get_pd_score(selector, gamenum):
+    if ( gamenum % 2 != 0 ):
+       result1 = selector.xpath(('//*[@id="ismFixtureTable"]/tbody/tr[%d]/td[4]/text()') % (gamenum))
+       k = result1.extract()
+       return k
+    else:
+       result1 = selector.xpath(('//*[@id="ismFixtureTable"]/tbody/tr[%d]/td[4]/text()') % (gamenum+1))
+       k = result1.extract()
+       return k
+
+def get_pd_awayteam(selector, gamenum):
+    if ( gamenum % 2 != 0 ):
+       result1 = selector.xpath(('//*[@id="ismFixtureTable"]/tbody/tr[%d]/td[6]/text()') % (gamenum))
+       k = result1.extract()
+       return k
+    else:
+       result1 = selector.xpath(('//*[@id="ismFixtureTable"]/tbody/tr[%d]/td[6]/text()') % (gamenum+1))
+       k = result1.extract()
+       return k
+
+
+####
 
 def gethometeam(selector, fixnum):
     homechunk = selector.xpath('//*[@id="ism"]//tbody//tr[@class="ismFixture"]//td[@class="ismHomeTeam"]/text()')
