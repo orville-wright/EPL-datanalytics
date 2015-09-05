@@ -1,11 +1,12 @@
 import sys
 import re
+import string
 #
 from scrapy.spider import Spider
 from scrapy.selector import Selector
 from scrapy.http import Request
 from scrapy.http import HtmlResponse
-from eplda.items import DmozItem
+from eplda.items import FixtureItem
 #
 import logging
 
@@ -17,7 +18,7 @@ class fixturesSpider(Spider):
       logging.basicConfig(level=logging.INFO)
       logging.info('*** Started: fixtures')
 
-      for u in range(1, 7):
+      for u in range(1, 8):
          gw = u
          # the game week is the number at the end of the fixtures URL
          # so construct the URL and pass it to he request
@@ -39,23 +40,48 @@ class fixturesSpider(Spider):
             k = get_up_date(sel0, m+1)
             a = get_up_hometeam(sel0, m+1)
             b = get_up_awayteam(sel0, m+1)
+            c = "-"
+
+            k = tidy_decoded_txt(k)
+            a = tidy_decoded_txt(a)
+            b = tidy_decoded_txt(b)
+
             print "Gameweek: %d - Game %s unplayed - starts at: %s - (Home) %s v %s (Away)" % (gw, m+1, k, a, b)
+            #load_fixarray(k, a, b, c)
          else:
             k = get_pd_date(sel0, m+1)
             a = get_pd_hometeam(sel0, m+1)
             b = get_pd_awayteam(sel0, m+1)
             c = get_pd_score(sel0, m+1)
+
+            k = tidy_decoded_txt(k)
+            a = tidy_decoded_txt(a)
+            b = tidy_decoded_txt(b)
+            c = tidy_decoded_txt(c)
+
             print "Gameweek: %d - Game %s played - started at: %s - (Home) %s %s %s (Away)" % (gw, m+1, k, a, c, b)
+            #load_fixarray(k, a, b, c)
 
-      # load array, or sore in mongodb database
-      fixtures = []
-      item = DmozItem()
-      item['fixdatetime'] = k
-      item['fixhometeam'] = a
-      item['fixawayteam'] = b
-      fixtures.append(item)
-      return
 
+def load_fixarray(k, a, b, c):
+   # load array, and/or appropriate mongodb collection
+   logging.info('*** loading array ***')
+   fixtures = []
+   item = FixtureItem()
+   item['fixdatetime'] = k
+   item['fixhometeam'] = a
+   item['fixawayteam'] = b
+   item['fixscore'] = c
+   fixtures.append(item)
+   print fixtures
+   return
+
+def tidy_decoded_txt(dirty_str):
+   #logging.info('*** tidy decoded text : %s' % (dirty_str) )
+   x = str(dirty_str)
+   clean_str = x.replace("[u'", "").replace("']", "")
+   return clean_str
+ 
 # functions for unplayed fixtures
 # a simple schema
 # _up_ = unplayed

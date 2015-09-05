@@ -11,12 +11,8 @@ from scrapy.item import Item, Field
 #    pass
 
 
-class DmozItem(Item):
-    clubname = Field()
-    clublink = Field()
-    clublogo = Field()
-
-class DmozItem(Item):
+class FixtureItem(Item):
     fixdatetime = Field()
     fixhometeam = Field()
     fixawayteam = Field()
+    fixscore = Field()

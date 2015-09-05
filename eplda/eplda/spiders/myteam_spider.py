@@ -7,7 +7,7 @@ from scrapy.spider import Spider
 from scrapy.selector import Selector
 from scrapy.http import Request
 from scrapy.http import HtmlResponse
-from eplda.items import DmozItem
+from eplda.items import FixtureItem
 #
 
 class geteamnameSpider(scrapy.Spider):
