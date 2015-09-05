@@ -59,7 +59,9 @@ class fixturesSpider(Spider):
             b = tidy_decoded_txt(b)
             c = tidy_decoded_txt(c)
 
-            print "Gameweek: %d - Game %s played - started at: %s - (Home) %s %s %s (Away)" % (gw, m+1, k, a, c, b)
+            v = winning_team(c)
+
+            print "Gameweek: %d - Game %s played - started at: %s - (Home) %s %s %s (Away) : Winner: %s" % (gw, m+1, k, a, c, b, v)
             #load_fixarray(k, a, b, c)
 
 
@@ -81,7 +83,22 @@ def tidy_decoded_txt(dirty_str):
    x = str(dirty_str)
    clean_str = x.replace("[u'", "").replace("']", "")
    return clean_str
- 
+
+def winning_team(score):
+   x = score.split(' ')
+   xhome = int(x[0])
+   xaway = int(x[2])
+   if xhome > xaway:
+      #logging.info('*** HOME wins: %s AWAY: %s ***' % (xhome, xaway) )
+      return "Home"
+   elif xhome < xaway:
+      #logging.info('*** HOME: %s AWAY wins: %s ***' % (xhome, xaway) )
+      return "Away"
+   else:
+      #logging.info('*** HOME: %s AWAY: %s  - DRAW ***' % (xhome, xaway) )
+      return "Draw"
+
+
 # functions for unplayed fixtures
 # a simple schema
 # _up_ = unplayed
