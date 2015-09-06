@@ -35,5 +35,9 @@ Example queries:
    using dot syle notation; which is more more readable and nicer...
        db.fixtures2015.find( { "fixinfo.hometeam": "Sunderland", "fixinfo.awayteam": "Man City" } ).pretty()
 
+3) list Sunderlands last game (game 38)
+   note: no easy way to know if they are playing at home or away for that game in 1 single statement
+       db.fixtures2015.find( {gameweek: 38, "fixinfo.awayteam": "Sunderland" } )
+
 
 
