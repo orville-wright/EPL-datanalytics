@@ -1,0 +1,39 @@
+general notes for mongodb queries
+=================================
+
+
+db = football
+collection = fixtures2015
+
+current fixtures2015 datamodel
+==============================
+
+Style: EMBEDDED
+
+{
+        "_id" : ObjectId("55eb8fbfbb49066b81ceddaa"),
+        "fixinfo" : {
+                "scorea" : "-",
+                "dateandtime" : "26 Dec 15:00",
+                "hometeam" : "Man City",
+                "winner" : "-",
+                "scoreh" : "-",
+                "awayteam" : "Sunderland",
+                "score" : "-"
+        },
+        "gameweek" : 18,
+        "fixnum" : 5
+
+
+Example queries:
+=================
+
+1) access the normalized (non-embeded) doc structure and find game 10 of gameweek 11...
+      db.fixtures2015.find( { gameweek: 11, fixnum: 10 }).pretty()
+
+2) access the embeded doc structure (fixinfo) and find games were Sunderland is at home playing Man City
+   using dot syle notation; which is more more readable and nicer...
+       db.fixtures2015.find( { "fixinfo.hometeam": "Sunderland", "fixinfo.awayteam": "Man City" } ).pretty()
+
+
+
