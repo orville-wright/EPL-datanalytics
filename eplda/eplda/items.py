@@ -12,7 +12,12 @@ from scrapy.item import Item, Field
 
 
 class FixtureItem(Item):
+    fixnum = Field()
     fixdatetime = Field()
     fixhometeam = Field()
     fixawayteam = Field()
+    fixplayed = Field()
+    fixwin = Field()
     fixscore = Field()
+    fixscorea = Field()
+    fixscoreh = Field()

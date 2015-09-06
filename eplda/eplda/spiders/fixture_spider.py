@@ -8,6 +8,9 @@ from scrapy.http import Request
 from scrapy.http import HtmlResponse
 from eplda.items import FixtureItem
 #
+import pymongo
+from pymongo import MongoClient
+#
 import logging
 
 class fixturesSpider(Spider):
@@ -30,6 +33,13 @@ class fixturesSpider(Spider):
       # extract the gameweek that we are scanning, i.e. the number at the end of the fixtures URL
       gw = int(re.sub(r'\D', "", gw_url))
 
+      # setup mongodb
+      logging.info('*** Setup mongodb access ***')
+      fixclient = MongoClient()
+      fixdb = fixclient.football
+      fixcol = fixdb.fixtures2015
+
+
       # check to see is game has been played or is pending.
       # a pending game has no score and has a "v" in the score field
       #logging.info('*** Checking game results')
@@ -47,6 +57,7 @@ class fixturesSpider(Spider):
             b = tidy_decoded_txt(b)
 
             print "Gameweek: %d - Game %s unplayed - starts at: %s - (Home) %s v %s (Away)" % (gw, m+1, k, a, b)
+            mongin_fixarray(fixcol, gw, m+1, k, a, b, c, w="-", v="-", h="-")
             #load_fixarray(k, a, b, c)
          else:
             k = get_pd_date(sel0, m+1)
@@ -59,11 +70,54 @@ class fixturesSpider(Spider):
             b = tidy_decoded_txt(b)
             c = tidy_decoded_txt(c)
 
-            v = winning_team(c)
+            w, h, v = winning_team(c)
 
-            print "Gameweek: %d - Game %s played - started at: %s - (Home) %s %s %s (Away) : Winner: %s" % (gw, m+1, k, a, c, b, v)
-            #load_fixarray(k, a, b, c)
+            print "Gameweek: %d - Game %s played - started at: %s - (Home) %s %s %s (Away) : Winner: %s" % (gw, m+1, k, a, c, b, w)
 
+            mongin_fixarray(fixcol, gw, m+1, k, a, b, c, w, v, h)
+
+
+##########################################################
+# functions
+
+def mongin_fixarray(fixcol, gw, fn, k, a, b, c, w, v, h):
+   # gw = gameweek
+   # fn = fixture number
+   # k = start date & time
+   # a = home team name
+   # b = away team name
+   # c = score (if game has been played)
+   # w = result state of game (Home win, Away win, Draw)
+   # v = away team score
+   # h = home team score
+
+   # load array, and/or appropriate mongodb collection
+   logging.info('*** loading fixture data into mongo collection ***')
+   fixtures = []
+   item = FixtureItem()
+   item['fixdatetime'] = k
+   item['fixhometeam'] = a
+   item['fixawayteam'] = b
+   item['fixscore'] = c
+   item['fixwin'] = w
+   fixtures.append(item)
+
+   result = fixcol.insert(
+                   { "gameweek": gw,
+                     "fixnum": fn,
+                     "fixinfo": {
+                                  "dateandtime": k,
+                                  "hometeam": a,
+                                  "awayteam": b,
+                                  "winner": w,
+                                  "score": c,
+                                  "scorea": v,
+                                  "scoreh": h
+                                }
+                   })
+
+   logging.info('*** Mongo insert result: %s' % (result) )
+   return
 
 def load_fixarray(k, a, b, c):
    # load array, and/or appropriate mongodb collection
@@ -90,13 +144,13 @@ def winning_team(score):
    xaway = int(x[2])
    if xhome > xaway:
       #logging.info('*** HOME wins: %s AWAY: %s ***' % (xhome, xaway) )
-      return "Home"
+      return "hometeam", xhome, xaway
    elif xhome < xaway:
       #logging.info('*** HOME: %s AWAY wins: %s ***' % (xhome, xaway) )
-      return "Away"
+      return "awayteam", xhome, xaway
    else:
       #logging.info('*** HOME: %s AWAY: %s  - DRAW ***' % (xhome, xaway) )
-      return "Draw"
+      return "Draw", xhome, xaway
 
 
 # functions for unplayed fixtures
