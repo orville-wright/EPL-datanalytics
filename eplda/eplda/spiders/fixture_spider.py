@@ -21,30 +21,37 @@ class fixturesSpider(Spider):
       logging.basicConfig(level=logging.INFO)
       logging.info('*** Started: fixtures')
 
-      for u in range(1, 8):
+      # this is the master scan loop.
+      # if controls how many times the webpage is scanned and what the webpage/URL is.
+      # Eddectively, it controlls which fixture week range you are scanning i.e. range(x, y)
+      for u in range(1, 39):
          gw = u
          # the game week is the number at the end of the fixtures URL
-         # so construct the URL and pass it to he request
+         # so construct the URL and pass it to the request method which goes out and
+         # pjysically reads the webpage
          yield Request('http://fantasy.premierleague.com/fixtures/' + str(u) +'/', self.parse)
 
    def parse(self, response):
+      # this callback method is triggered after each webpage read operation
       sel0 = Selector(response)
       gw_url = response.url
       # extract the gameweek that we are scanning, i.e. the number at the end of the fixtures URL
+      # becasue this is useful for many reasons
       gw = int(re.sub(r'\D', "", gw_url))
 
       # setup mongodb
-      logging.info('*** Setup mongodb access ***')
+      #logging.info('*** Setup mongodb access ***')
       fixclient = MongoClient()
       fixdb = fixclient.football
       fixcol = fixdb.fixtures2015
 
 
-      # check to see is game has been played or is pending.
+      # check to see if this game has been played or is pending.
       # a pending game has no score and has a "v" in the score field
       #logging.info('*** Checking game results')
+      # _up_ = unplayed game
+      # _pd_ = played game
       result0 = sel0.xpath('//*[@id="ismFixtureTable"]/tbody/tr[*]/td[4]/text()')
-
       for m, n in enumerate(result0.extract()):
          if n == "v":
             k = get_up_date(sel0, m+1)
@@ -92,7 +99,7 @@ def mongin_fixarray(fixcol, gw, fn, k, a, b, c, w, v, h):
    # h = home team score
 
    # load array, and/or appropriate mongodb collection
-   logging.info('*** loading fixture data into mongo collection ***')
+   #logging.info('*** loading fixture data into mongo collection ***')
    fixtures = []
    item = FixtureItem()
    item['fixdatetime'] = k
@@ -116,7 +123,7 @@ def mongin_fixarray(fixcol, gw, fn, k, a, b, c, w, v, h):
                                 }
                    })
 
-   logging.info('*** Mongo insert result: %s' % (result) )
+   #logging.info('*** Mongo insert result: %s' % (result) )
    return
 
 def load_fixarray(k, a, b, c):
@@ -133,12 +140,16 @@ def load_fixarray(k, a, b, c):
    return
 
 def tidy_decoded_txt(dirty_str):
+   # since the data we are working with comes from a scraped website
+   # its a bit untidy. So strip off all the stuff we dont like.
    #logging.info('*** tidy decoded text : %s' % (dirty_str) )
    x = str(dirty_str)
    clean_str = x.replace("[u'", "").replace("']", "")
    return clean_str
 
 def winning_team(score):
+   # decipher who won (Home, Away or Draw) and return the info
+   # along with an INTEGER of the goal scored of the home & away team
    x = score.split(' ')
    xhome = int(x[0])
    xaway = int(x[2])
